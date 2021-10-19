@@ -87,7 +87,60 @@ try {
 //    triées par montant croissant,
 displayQuest('1.4');
 
-// $requeteAriane = Carte::select('nom_proprietaire','montant')
-//                       ->where()
-//                         // $like$ + orderBy Asc
-//                       //finir 1 et 2
+$requeteAriane = Carte::select('nom_proprietaire','cumul')
+                      ->where('nom_proprietaire','like','%Ariane%')
+                      ->orderBy('cumul','asc');
+$lignesAriane = $requeteAriane->get();
+foreach ($lignesAriane as $carte) {
+    echo "$carte->nom_proprietaire, $carte->cumul \n";
+}
+
+
+// 5. Créer une nouvelle carte
+displayQuest('1.5');
+
+$carteDupond = new Carte();
+$carteDupond->password = 'azerty';
+$carteDupond->nom_proprietaire = 'Dupond Dupont';
+$carteDupond->mail_proprietaire = 'dupond.dupont@dupond.d';
+$carteDupond->cumul = 10;
+
+// $carteDupond->save();
+
+echo "Carte créée \n";
+
+
+//// 2. Associations 1-n
+
+// 1. afficher la carte n° 42 et ses commandes
+displayQuest('2.1');
+
+$carte42 = Carte::find(42);
+$commandesCarte42 = $carte42->commandes()->get();
+
+echo("Commande de la carte : $carte42->id $carte->nom_proprietaire \n \n");
+
+foreach ($commandesCarte42 as $commande) {
+    echo "Client : $commande->nom_client, montant : $commande->montant \n";
+}
+
+// 2. lister les cartes dont le montant est > 1000, 
+//    et pour chaque carte, lister les commandes associées.
+//    utiliser un chargement lié
+displayQuest('2.2');
+
+$cartesSup1000_commandes = Carte::select('nom_proprietaire','cumul')
+                             ->with('commandes')     // chargement lié avec with
+                             ->where('cumul','>','1000')
+                             ->get();
+$a = $cartesSup1000_commandes['commandes']; 
+var_dump($a);                            
+// foreach ($cartesSup1000_commandes as $carte) {
+//     echo("$carte->nom_proprietaire, $carte->cumul \n");
+//     // var_dump($carte->commandes->id);
+//     // foreach($carte->commandes as $commande) {
+//     //     echo ("1");
+//     // }
+// }
+
+

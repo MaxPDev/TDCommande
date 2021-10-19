@@ -13,4 +13,8 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
 
         public $incrementing = false;
         public $keyType='string';
+
+        public function carte() {
+                return $this->belongsTo('commandapp\model\Carte','carte_id');
+        }
 }

@@ -11,5 +11,8 @@ class Carte extends \Illuminate\Database\Eloquent\Model {
                                             les deux colonnes updated_at,
                                             created_at */
 
+       public function commandes() {
+              return $this->hasMany('commandapp\model\Commande', 'carte_id');
+       }
 
 }
