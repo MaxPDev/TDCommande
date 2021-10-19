@@ -1,5 +1,8 @@
 {
     "require": {
         "illuminate/database": "^8.64"
+    },
+    "autoload": {
+        "psr-4": {"commandapp\\": "src/commandapp/"}
     }
 }

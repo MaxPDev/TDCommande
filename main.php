@@ -6,13 +6,14 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-require_once 'src/mf/utils/AbstractClassLoader.php';
-require_once 'src/mf/utils/ClassLoader.php';
-
 require_once 'vendor/autoload.php';
 
-$loader = new \mf\utils\ClassLoader('src');
-$loader->register();
+// require_once 'src/mf/utils/AbstractClassLoader.php';
+// require_once 'src/mf/utils/ClassLoader.php';
+
+// $loader = new \mf\utils\ClassLoader('src');
+// $loader->register();
+
 
 use commandapp\model\Carte as Carte;
 use commandapp\model\Commande as Commande;
