@@ -160,6 +160,49 @@ foreach ($commandes_associees_a_carte as $commande) {
     echo($commande->carte->nom_proprietaire . " " . $commande->carte->cumul . " \n");
 }
 
+// 4. créer 3 commandes associées à la carte n°10
+displayQuest('2.4');
 
+$carte10 = Carte::find(10);
+
+$commande_a_associer_1 = new Commande();
+$commande_a_associer_1->id = "newCommande_1";
+$commande_a_associer_1->date_livraison = date("Y-m-d H:i:s");
+$commande_a_associer_1->montant = 10;
+$commande_a_associer_1->etat = 0;
+$commande_a_associer_1->nom_client = "Marcel" ;
+
+$commande_a_associer_2 = new Commande();
+$commande_a_associer_2->id = "newCommande_2";
+$commande_a_associer_2->date_livraison = date("Y-m-d H:i:s");
+$commande_a_associer_2->montant = 20;
+$commande_a_associer_2->etat = 0;
+$commande_a_associer_2->nom_client = "SuperAcarien" ;
+
+$commande_a_associer_3 = new Commande();
+$commande_a_associer_3->id = "newCommande 3";
+$commande_a_associer_3->date_livraison = date("Y-m-d H:i:s");
+$commande_a_associer_3->montant = 30;
+$commande_a_associer_3->etat = 0;
+$commande_a_associer_3->nom_client = "Djonne Dos" ;
+
+// $carte10->commandes()->save($commande_a_associer_1);
+// $carte10->commandes()->save($commande_a_associer_2);
+// $carte10->commandes()->save($commande_a_associer_3);
+
+// 5. changer la carte associée à la 3ème commande pour l'associer à la carte 11
+displayQuest('2.5');
+
+$commande_new_3 = Commande::find("newCommande 3");
+$carte11 = Carte::find(11);
+// $commande_new_3->carte()->dissociate();
+// $commande_new_3->save();
+$commande_new_3->carte()->associate($carte11);
+$commande_new_3->save();
+
+// $commande_a_associer_3->save();
+
+
+//// 3. Associations N-N et attributs d'associations
 
 
