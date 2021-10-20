@@ -202,7 +202,14 @@ $commande_new_3->save();
 
 // $commande_a_associer_3->save();
 
+echo "Association de commande 3 changer à carte 11";
+
 
 //// 3. Associations N-N et attributs d'associations
+
+// 1. lister les items de la commande "000b2a0b-d055-4499-9c1b-84441a254a36
+displayQuest('3.1');
+
+
 
 

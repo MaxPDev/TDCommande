@@ -17,4 +17,13 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
         public function carte() {
                 return $this->belongsTo('commandapp\model\Carte','carte_id');
         }
+
+        public function items() {
+                return $this->belongsToMany('commandapp\model\Item',
+                                             'item_commande',
+                                             'commande_id',
+                                             'item_id')
+                        ->withPivot('quantite') // mettre dans [] ?
+                        ->as('item_commande');
+        }
 }
