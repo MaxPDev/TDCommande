@@ -121,7 +121,7 @@ $commandesCarte42 = $carte42->commandes()->get();
 echo("Commande de la carte : $carte42->id $carte->nom_proprietaire \n \n");
 
 foreach ($commandesCarte42 as $commande) {
-    echo "Client : $commande->nom_client, montant : $commande->montant \n";
+    echo "Client : $commande->nom_client, montant commande : $commande->montant \n";
 }
 
 // 2. lister les cartes dont le montant est > 1000, 
@@ -129,18 +129,37 @@ foreach ($commandesCarte42 as $commande) {
 //    utiliser un chargement lié
 displayQuest('2.2');
 
-$cartesSup1000_commandes = Carte::select('nom_proprietaire','cumul')
-                             ->with('commandes')     // chargement lié avec with
-                             ->where('cumul','>','1000')
-                             ->get();
-$a = $cartesSup1000_commandes['commandes']; 
-var_dump($a);                            
-// foreach ($cartesSup1000_commandes as $carte) {
-//     echo("$carte->nom_proprietaire, $carte->cumul \n");
-//     // var_dump($carte->commandes->id);
-//     // foreach($carte->commandes as $commande) {
-//     //     echo ("1");
-//     // }
-// }
+ // chargement lié avec with
+
+$cartesSup1000_commandes = Carte::with('commandes')->where('cumul','>','1000')->get();
+// $a = $cartesSup1000_commandes['commandes']; 
+// var_dump($cartesSup1000_commandes[4]->commandes[2]); 
+
+echo("Cartes : \n \n");
+foreach ($cartesSup1000_commandes as $carte) {
+    echo PHP_EOL;
+    echo("Carte ===> \n");
+    echo("$carte->nom_proprietaire, $carte->cumul \n");
+    echo("Commande : \n");
+    foreach($carte->commandes as $commande) {
+        echo("Client : $commande->nom_client, montant commande : $commande->montant \n");
+    }
+}
+
+
+// 3. lister les commandes qui sont associées à une carte, 
+//    et pour chacune d'elle les informations concernant la carte,
+displayQuest('2.3');
+
+$commandes_associees_a_carte = Commande::whereNotNull('carte_id')->with('carte')->get();
+foreach ($commandes_associees_a_carte as $commande) {
+    echo PHP_EOL;
+    echo("Commande ===> \n");
+    echo("Commande : $commande->nom_client, montant commande : $commande->montant \n");
+    echo("Client : \n");
+    echo($commande->carte->nom_proprietaire . " " . $commande->carte->cumul . " \n");
+}
+
+
 
 
