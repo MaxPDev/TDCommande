@@ -12,7 +12,7 @@ class Item extends \Illuminate\Database\Eloquent\Model {
                                             created_at */
 
        
-       public function items() {
+       public function commandes() {
        return $this->belongsToMany('commandapp\model\Commande',
                                           'item_commande',
                                           'idem_id',

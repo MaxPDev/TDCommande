@@ -198,7 +198,7 @@ $carte11 = Carte::find(11);
 // $commande_new_3->carte()->dissociate();
 // $commande_new_3->save();
 $commande_new_3->carte()->associate($carte11);
-$commande_new_3->save();
+// $commande_new_3->save();
 
 // $commande_a_associer_3->save();
 
@@ -210,6 +210,23 @@ echo "Association de commande 3 changer à carte 11";
 // 1. lister les items de la commande "000b2a0b-d055-4499-9c1b-84441a254a36
 displayQuest('3.1');
 
+$commande_a36 = Commande::find('000b2a0b-d055-4499-9c1b-84441a254a36');
+$items_coma36 = $commande_a36->items;
+echo "Item de la commande ***a36 : " . PHP_EOL;
+foreach ($items_coma36 as $item_com36) {
+    echo $item_com36->libelle . PHP_EOL;
+}
+
+displayQuest('3.2');
+
+$items = Item::all();
+foreach ($items as $item) {
+    echo "Item : $item->libelle , commandes associées (par nom de client) : " . PHP_EOL;
+    $commandes = $item->commandes;
+    foreach ($commandes as $comande) {
+        echo "$commande->nom_client";
+    }
+}
 
 
 
