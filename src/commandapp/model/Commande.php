@@ -26,11 +26,5 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
                         ->withPivot('quantite') // mettre dans [] ?
                         ->as('item_commande');
         }
-
-        // NOTÉ !!!!!!!!!
-        // REGARDER FIN SLIDE : MODEL DIFFEREBT D ACTIVE RECORD (dotrine, hibernate)
-        // TD 2 A RENDRE ASSUI -> A RENDRE FIN DU MODULE
-        // REGARDER VIDEO GENERER AUTOLOADER AVEC COMPOSER
-        // ON UTILISERA L AUTOLOADER DE COMPOSER POUR LE MICRO ORM
         
 }

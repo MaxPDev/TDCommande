@@ -16,7 +16,9 @@ class Item extends \Illuminate\Database\Eloquent\Model {
        return $this->belongsToMany('commandapp\model\Commande',
                                           'item_commande',
                                           'idem_id',
-                                          'commande_id');
+                                          'commande_id')
+                     ->withPivot('quantite')
+                     ->as('item_commande');
        }
        
 

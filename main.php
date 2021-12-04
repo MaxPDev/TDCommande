@@ -219,14 +219,60 @@ foreach ($items_coma36 as $item_com36) {
 
 displayQuest('3.2');
 
-$items = Item::all();
-foreach ($items as $item) {
-    echo "Item : $item->libelle , commandes associées (par nom de client) : " . PHP_EOL;
-    $commandes = $item->commandes;
-    foreach ($commandes as $comande) {
-        echo "$commande->nom_client";
+// $items = Item::all();
+// foreach ($items as $item) {
+//     echo "Item : $item->libelle , commandes associées (par nom de client) : " . PHP_EOL;
+//     $item_from_db = Item::find($item->id);
+//     $commandes = $item_from_db->commandes();
+//     foreach ($commandes as $comm) {
+//         print_r($comm);
+//         echo($comm);
+//         // echo "$comm->nom_client";
+//     }
+// }
+
+displayQuest('3.3');
+
+$coms_from_Aaron = Commande::where('nom_client','=','Aaron McGlynn')->get();
+echo PHP_EOL . "Commandes passé par Aaron MacGlynn :" . PHP_EOL;
+foreach ($coms_from_Aaron as $com_from_Aaron) {
+    echo $com_from_Aaron->id . PHP_EOL;
+    echo "-> Items associés à la commande :" . PHP_EOL;
+    foreach ($com_from_Aaron->items as $item_for_Aaron) {
+        echo "--> " . $item_for_Aaron->libelle . " x" . $item_for_Aaron->item_commande->quantite;
+        echo PHP_EOL;
     }
+    echo PHP_EOL;
 }
 
+displayQuest('3.4');
 
 
+//// 4. Requêtes sur des associations
+
+displayQuest('4.1');
+
+$carteAaron = Carte::where('nom_proprietaire','like','Aaron McGlynn')->first();
+$comsAaronZero = $carteAaron->commandes()->where('etat','>','0')->get();
+echo "Commande de Aaron McGlynn, où l'état est > à 0 : " . PHP_EOL;
+foreach ($comsAaronZero as $comAarZero) {
+    echo $comAarZero->id . PHP_EOL;
+}
+
+displayQuest('4.2');
+
+$carte28 = Carte::find("28");
+$comsCarte28 = $carte28->commandes()->where('etat','>=','0')->where('montant','>','20')->get();
+echo "Commandes associées à la carte 28, avec état >=0 et montant > 0 :" .PHP_EOL;
+foreach ($comsCarte28 as $comCarte28) {
+    echo $comCarte28->id . ', état : ' . $comCarte28->etat . ', prix : ' . $comCarte28->montant . PHP_EOL;
+}
+
+displayQuest('4.3');
+
+$com9f1 = Commande::find("9f1c3241-958a-4d35-a8c9-19eef6a4fab3");
+$items_9f1 = $com9f1->items()->where('tarif','<','5')->get();
+echo 'Items de la commande "9f1c3241-958a-4d35-a8c9-19eef6a4fab3" dont le tarif est < 5.0';
+foreach ($items_9f1 as $item_9f1) {
+    echo $item_9f1->libelle . ', tarif ; ' . $item_9f1->tarif . PHP_EOL;
+}
