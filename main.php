@@ -210,8 +210,9 @@ echo "Association de commande 3 changer à carte 11";
 // 1. lister les items de la commande "000b2a0b-d055-4499-9c1b-84441a254a36
 displayQuest('3.1');
 
+// Item::find('2')->delete();
 $commande_a36 = Commande::find('000b2a0b-d055-4499-9c1b-84441a254a36');
-$items_coma36 = $commande_a36->items;
+$items_coma36 = $commande_a36->items()->withTrashed()->get();
 echo "Item de la commande ***a36 : " . PHP_EOL;
 foreach ($items_coma36 as $item_com36) {
     echo $item_com36->libelle . PHP_EOL;
@@ -219,17 +220,14 @@ foreach ($items_coma36 as $item_com36) {
 
 displayQuest('3.2');
 
-// $items = Item::all();
-// foreach ($items as $item) {
-//     echo "Item : $item->libelle , commandes associées (par nom de client) : " . PHP_EOL;
-//     $item_from_db = Item::find($item->id);
-//     $commandes = $item_from_db->commandes();
-//     foreach ($commandes as $comm) {
-//         print_r($comm);
-//         echo($comm);
-//         // echo "$comm->nom_client";
-//     }
-// }
+$items = Item::withTrashed()->get();
+foreach ($items as $item) {
+    echo "Item : $item->libelle , commandes associées (par nom de client) : " . PHP_EOL;
+    $commandes = $item->commandes()->get();
+    foreach ($commandes as $comm) {
+        echo "-> $comm->id" . ', client: ' . $comm->nom_client . PHP_EOL; 
+    }
+}
 
 displayQuest('3.3');
 
@@ -238,41 +236,106 @@ echo PHP_EOL . "Commandes passé par Aaron MacGlynn :" . PHP_EOL;
 foreach ($coms_from_Aaron as $com_from_Aaron) {
     echo $com_from_Aaron->id . PHP_EOL;
     echo "-> Items associés à la commande :" . PHP_EOL;
-    foreach ($com_from_Aaron->items as $item_for_Aaron) {
+    foreach ($com_from_Aaron->items()->withTrashed()->get() as $item_for_Aaron) {
         echo "--> " . $item_for_Aaron->libelle . " x" . $item_for_Aaron->item_commande->quantite;
-        echo PHP_EOL;
     }
     echo PHP_EOL;
 }
 
-displayQuest('3.4');
+// displayQuest('3.4');
+
+// $newComm1 = Commande::find('newCommande_1');
+// $newComm1->items()->detach([2,6]); // Only to avoid repetition when executing this script many times
+// $newComm1->items()->attach( [
+//     2=>['quantite'=>3],
+//     6=>['quantite'=>4]
+// ]);
+// echo "Item 2 et 6 rajoutés en quantité 3 et 4 pour $newComm1->id";
+// echo PHP_EOL;
+// foreach ($newComm1->items as $it) {
+//     echo '-> ' . $it->libelle . ', quantite: ' . $it->item_commande->quantite . PHP_EOL;
+// }
 
 
-//// 4. Requêtes sur des associations
+// //// 4. Requêtes sur des associations
 
-displayQuest('4.1');
+// displayQuest('4.1');
 
-$carteAaron = Carte::where('nom_proprietaire','like','Aaron McGlynn')->first();
-$comsAaronZero = $carteAaron->commandes()->where('etat','>','0')->get();
-echo "Commande de Aaron McGlynn, où l'état est > à 0 : " . PHP_EOL;
-foreach ($comsAaronZero as $comAarZero) {
-    echo $comAarZero->id . PHP_EOL;
-}
+// $carteAaron = Carte::where('nom_proprietaire','like','Aaron McGlynn')->first();
+// $comsAaronZero = $carteAaron->commandes()->where('etat','>','0')->get();
+// echo "Commande de Aaron McGlynn, où l'état est > à 0 : " . PHP_EOL;
+// foreach ($comsAaronZero as $comAarZero) {
+//     echo $comAarZero->id . PHP_EOL;
+// }
 
-displayQuest('4.2');
+// displayQuest('4.2');
 
-$carte28 = Carte::find("28");
-$comsCarte28 = $carte28->commandes()->where('etat','>=','0')->where('montant','>','20')->get();
-echo "Commandes associées à la carte 28, avec état >=0 et montant > 0 :" .PHP_EOL;
-foreach ($comsCarte28 as $comCarte28) {
-    echo $comCarte28->id . ', état : ' . $comCarte28->etat . ', prix : ' . $comCarte28->montant . PHP_EOL;
-}
+// $carte28 = Carte::find("28");
+// $comsCarte28 = $carte28->commandes()->where('etat','>=','0')->where('montant','>','20')->get();
+// echo "Commandes associées à la carte 28, avec état >=0 et montant > 0 :" .PHP_EOL;
+// foreach ($comsCarte28 as $comCarte28) {
+//     echo $comCarte28->id . ', état : ' . $comCarte28->etat . ', prix : ' . $comCarte28->montant . PHP_EOL;
+// }
 
-displayQuest('4.3');
+// displayQuest('4.3');
 
-$com9f1 = Commande::find("9f1c3241-958a-4d35-a8c9-19eef6a4fab3");
-$items_9f1 = $com9f1->items()->where('tarif','<','5')->get();
-echo 'Items de la commande "9f1c3241-958a-4d35-a8c9-19eef6a4fab3" dont le tarif est < 5.0';
-foreach ($items_9f1 as $item_9f1) {
-    echo $item_9f1->libelle . ', tarif ; ' . $item_9f1->tarif . PHP_EOL;
-}
+// $com9f1 = Commande::find("9f1c3241-958a-4d35-a8c9-19eef6a4fab3");
+// $items_9f1 = $com9f1->items()->where('tarif','<','5')->get();
+// echo 'Items de la commande "9f1c3241-958a-4d35-a8c9-19eef6a4fab3" dont le tarif est < 5.0';
+// foreach ($items_9f1 as $item_9f1) {
+//     echo $item_9f1->libelle . ', tarif ; ' . $item_9f1->tarif . PHP_EOL;
+// }
+
+// displayQuest('4.4');
+
+// $cartes_8 = Carte::has('commandes','>','8')->get();
+// echo "Cartes ayant été utilisées pour plus de 8 commandes (id + nom propriétaire) :" . PHP_EOL;
+// foreach ($cartes_8 as $carte_8) {
+//     echo 'Carte n°' . $carte_8->id . ' appartenant à ' . $carte_8->nom_proprietaire . PHP_EOL;
+// }
+
+// displayQuest('4.5');
+
+// // $cartes_comm_3items = Carte::whereHas('commandes', function($c) {
+// //     $c->has('items','>','3');
+// // })->get();
+// // echo "Cartes ayant des commandes de plus de 3 items (id + nom propriétaire) :" . PHP_EOL;
+// // foreach ($cartes_comm_3items as $carte_comm_3items) {
+// //     echo 'Carte n°' . $carte_comm_3items->id . ' appartenant à ' . $carte_comm_3items->nom_proprietaire . PHP_EOL;
+// // }
+
+// displayQuest('4.6');
+
+// $comms_item2 = Commande::whereHas('items', function($i) {
+//     $i->where('id','=','2');
+// })->get();
+// echo "Commandes contenant l'item n°2 (id + nom client) :" . PHP_EOL;
+// foreach ($comms_item2 as $comm_item2) {
+//     echo $comm_item2->id . ', nom client : ' . $comm_item2->nom_client . PHP_EOL;
+// }
+
+// displayQuest('4.7');
+
+// $cartes_com30 = Carte::whereHas('commandes', function($com) {
+//     $com->where('montant','>','30.0');
+// })->get();
+// echo "Cartes ayant des commandes ont un montant > à 30.0 (id + nom propriétaire) :" . PHP_EOL;
+// foreach ($cartes_com30 as $carte_com30) {
+//     echo 'Carte n°' . $carte_com30->id . ' appartenant à ' . $carte_com30->nom_proprietaire . PHP_EOL;
+// }
+
+// displayQuest('4.8');
+
+// $coms_card_3items = Commande::whereNotNull('carte_id')->has('items','>','3')->orderBy('carte_id')->get();
+// echo "Commmandes associées à une carte et ayant + 3 items : " . PHP_EOL;
+// foreach ($coms_card_3items as $com_card_3items) {
+//     echo $com_card_3items->id . ', nom client : ' . $com_card_3items->nom_client . ', carte n°' . $com_card_3items->carte_id . PHP_EOL;
+
+// }
+
+
+//// 6. Soft Deletes
+// Item::find('2')->delete();
+// Item::find('7')->delete();
+
+

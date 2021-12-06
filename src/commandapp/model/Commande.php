@@ -2,8 +2,11 @@
 
 namespace commandapp\model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Commande extends \Illuminate\Database\Eloquent\Model {
+
+        use SoftDeletes;
 
        protected $table      = 'commande';  /* le nom de la table */
        protected $primaryKey = 'id';     /* le nom de la clé primaire */
@@ -13,6 +16,8 @@ class Commande extends \Illuminate\Database\Eloquent\Model {
 
         public $incrementing = false;
         public $keyType='string';
+
+        protected $dates = ['deleted_at'];
 
         public function carte() {
                 return $this->belongsTo('commandapp\model\Carte','carte_id');
