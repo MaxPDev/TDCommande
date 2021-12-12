@@ -41,10 +41,10 @@ function displayQuest(string $num) {
 //Item_commande.php n'est pas encore écrit
 
 // Test du fonctionnement des models sauf Item_commande
-echo 'carte ' . Carte::where('id','=','1')->first() . PHP_EOL;
-echo 'commande ' . Commande::where('montant','=','4.50')->first() . PHP_EOL;
-echo 'Item ' . Item::where('id','=','1')->first() . PHP_EOL;
-echo 'Paiement ' . Paiement::where('montant_paiement','=','32.20')->first() . PHP_EOL;
+// echo 'carte ' . Carte::where('id','=','1')->first() . PHP_EOL;
+// echo 'commande ' . Commande::where('montant','=','4.50')->first() . PHP_EOL;
+// echo 'Item ' . Item::where('id','=','1')->first() . PHP_EOL;
+// echo 'Paiement ' . Paiement::where('montant_paiement','=','32.20')->first() . PHP_EOL;
 
 
 //// 1. Requêtes simples
@@ -55,18 +55,20 @@ displayQuest('1.1');
 
 $requeteCarte = Carte::select('nom_proprietaire','mail_proprietaire','cumul');
 $lignesCarte = $requeteCarte->get();
+echo "1. liste des cartes de fidélité, avec le nom, mail du propriétaire et le montant cumulé" . PHP_EOL;
 foreach ($lignesCarte as $carte) {
-    echo "Nom : $carte->nom_proprietaire \n mail : $carte->mail_proprietaire \n cumul : $carte->cumul";
+    echo "Nom : $carte->nom_proprietaire \nmail : $carte->mail_proprietaire \ncumul : $carte->cumul \n\n";
 }
 
 // 2. la même liste, trie par ordre alphabétique décroissant du nom
 displayQuest('1.2');
 
 $requeteCarteOrd = Carte::select('nom_proprietaire','mail_proprietaire','cumul')
-                        ->orderBy('nom_proprietaire','asc');
+                        ->orderBy('nom_proprietaire','desc');
 $lignesCarteOrd = $requeteCarteOrd->get();
+echo "2. la même liste, trie par ordre alphabétique décroissant du nom" . PHP_EOL;
 foreach ($lignesCarteOrd as $carte) {
-    echo "Nom : $carte->nom_proprietaire \n";
+    echo "Nom : $carte->nom_proprietaire \nmail : $carte->mail_proprietaire \ncumul : $carte->cumul \n\n";
 }
 
 // 3. la carte n°7342 si elle existe, utiliser ModelNotFoundException 
@@ -76,11 +78,12 @@ displayQuest('1.3');
 // findOrFail($id) et seulement id vs firstOfFail()
 // find raccourci pou where. Sinon alors where() puis firstOrFail (1 elmntd de la coll)
 
-
+echo "3. la carte n°7342 si elle existe, utiliser ModelNotFoundException pour gérer le cas où elle n'existe pas" . PHP_EOL;
 try {
-    $c7342 = Carte::findOrFail(7342) ;
+    $c7342 = Carte::findOrFail(7342);
+    echo "Nom : $carte->nom_proprietaire \nmail : $carte->mail_proprietaire \ncumul : $carte->cumul \n\n";
 } catch (ModelNotFoundException $e) {
-    echo "Carte n°7342 pas trouvée. \n";
+    echo "La carte n°7342 n'a pas été trouvée dans la base de donnée. \n";
 }
 
 // 4. les cartes dont le nom du propriétaire contient 'Ariane', 
@@ -91,6 +94,7 @@ $requeteAriane = Carte::select('nom_proprietaire','cumul')
                       ->where('nom_proprietaire','like','%Ariane%')
                       ->orderBy('cumul','asc');
 $lignesAriane = $requeteAriane->get();
+echo "4. les cartes dont le nom du propriétaire contient 'Ariane', triées par montant croissant" . PHP_EOL;
 foreach ($lignesAriane as $carte) {
     echo "$carte->nom_proprietaire, $carte->cumul \n";
 }
@@ -99,6 +103,7 @@ foreach ($lignesAriane as $carte) {
 // 5. Créer une nouvelle carte
 displayQuest('1.5');
 
+echo "5. créer une nouvelle carte" . PHP_EOL;
 $carteDupond = new Carte();
 $carteDupond->password = 'azerty';
 $carteDupond->nom_proprietaire = 'Dupond Dupont';
@@ -118,7 +123,7 @@ displayQuest('2.1');
 $carte42 = Carte::find(42);
 $commandesCarte42 = $carte42->commandes()->get();
 
-echo("Commande de la carte : $carte42->id $carte->nom_proprietaire \n \n");
+echo("Commande de la carte : $carte42->id. Appartient à $carte->nom_proprietaire \n \n");
 
 foreach ($commandesCarte42 as $commande) {
     echo "Client : $commande->nom_client, montant commande : $commande->montant \n";
@@ -135,12 +140,14 @@ $cartesSup1000_commandes = Carte::with('commandes')->where('cumul','>','1000')->
 // $a = $cartesSup1000_commandes['commandes']; 
 // var_dump($cartesSup1000_commandes[4]->commandes[2]); 
 
+echo "2. lister les cartes dont le montant est > 1000, et pour chaque carte, lister les 
+commandes associées ; utiliser un chargement lié" . PHP_EOL . PHP_EOL;
 echo("Cartes : \n \n");
 foreach ($cartesSup1000_commandes as $carte) {
     echo PHP_EOL;
     echo("Carte ===> \n");
-    echo("$carte->nom_proprietaire, $carte->cumul \n");
-    echo("Commande : \n");
+    echo("$carte->nom_proprietaire, montant : $carte->cumul \n");
+    echo("Commandes associées : \n");
     foreach($carte->commandes as $commande) {
         echo("Client : $commande->nom_client, montant commande : $commande->montant \n");
     }
@@ -151,17 +158,20 @@ foreach ($cartesSup1000_commandes as $carte) {
 //    et pour chacune d'elle les informations concernant la carte,
 displayQuest('2.3');
 
+echo "3. lister les commandes qui sont associées à une carte, et pour chacune d'elle les informations concernant la carte," . PHP_EOL;
 $commandes_associees_a_carte = Commande::whereNotNull('carte_id')->with('carte')->get();
 foreach ($commandes_associees_a_carte as $commande) {
     echo PHP_EOL;
     echo("Commande ===> \n");
     echo("Commande : $commande->nom_client, montant commande : $commande->montant \n");
-    echo("Client : \n");
-    echo($commande->carte->nom_proprietaire . " " . $commande->carte->cumul . " \n");
+    echo("Informations concernant la carte : \n");
+    echo("Nom du propriétaire :" . $commande->carte->nom_proprietaire . ", cumul: " . $commande->carte->cumul . " \n");
 }
 
 // 4. créer 3 commandes associées à la carte n°10
 displayQuest('2.4');
+
+echo "Créer 3 commandes associées à la carte n°10 :" . PHP_EOL;
 
 $carte10 = Carte::find(10);
 
@@ -190,19 +200,22 @@ $carte10->commandes()->save($commande_a_associer_1);
 $carte10->commandes()->save($commande_a_associer_2);
 $carte10->commandes()->save($commande_a_associer_3);
 
-// 5. changer la carte associée à la 3ème commande pour l'associer à la carte 11
-displayQuest('2.5');
+echo "Cartes créées"  . PHP_EOL;
 
+// // 5. changer la carte associée à la 3ème commande pour l'associer à la carte 11
+// displayQuest('2.5');
+
+echo " changer la carte associée à la 3ème commande pour l'associer à la carte 11" . PHP_EOL;
 $commande_new_3 = Commande::find("newCommande 3");
 $carte11 = Carte::find(11);
-// $commande_new_3->carte()->dissociate();
-// $commande_new_3->save();
+$commande_new_3->carte()->dissociate();
+$commande_new_3->save();
 $commande_new_3->carte()->associate($carte11);
-// $commande_new_3->save();
+$commande_new_3->save();
 
 // $commande_a_associer_3->save();
 
-echo "Association de commande 3 changer à carte 11";
+echo "3ème commandes créée associée à la carte 11." . PHP_EOL;
 
 
 //// 3. Associations N-N et attributs d'associations
@@ -257,7 +270,7 @@ foreach ($newComm1->items as $it) {
 }
 
 
-//// 4. Requêtes sur des associations
+// //// 4. Requêtes sur des associations
 
 displayQuest('4.1');
 
@@ -281,7 +294,7 @@ displayQuest('4.3');
 
 $com9f1 = Commande::find("9f1c3241-958a-4d35-a8c9-19eef6a4fab3");
 $items_9f1 = $com9f1->items()->where('tarif','<','5')->get();
-echo 'Items de la commande "9f1c3241-958a-4d35-a8c9-19eef6a4fab3" dont le tarif est < 5.0';
+echo 'Items de la commande "9f1c3241-958a-4d35-a8c9-19eef6a4fab3" dont le tarif est < 5.0' . PHP_EOL;
 foreach ($items_9f1 as $item_9f1) {
     echo $item_9f1->libelle . ', tarif ; ' . $item_9f1->tarif . PHP_EOL;
 }
@@ -298,7 +311,7 @@ displayQuest('4.5');
 
 $cartes_comm_3items = Carte::whereHas('commandes', function($c) {
     $c->has('items','>','3');
-})->get();
+})->get(); // Optimisable ??
 echo "Cartes ayant des commandes de plus de 3 items (id + nom propriétaire) :" . PHP_EOL;
 foreach ($cartes_comm_3items as $carte_comm_3items) {
     echo 'Carte n°' . $carte_comm_3items->id . ' appartenant à ' . $carte_comm_3items->nom_proprietaire . PHP_EOL;
@@ -334,7 +347,7 @@ foreach ($coms_card_3items as $com_card_3items) {
 }
 
 
-// 6. Soft Deletes
+// // 6. Soft Deletes
 Item::find('2')->delete();
 Item::find('7')->delete();
 
