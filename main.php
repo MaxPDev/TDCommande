@@ -18,8 +18,8 @@ require_once 'vendor/autoload.php';
 use commandapp\model\Carte as Carte;
 use commandapp\model\Commande as Commande;
 use commandapp\model\Item as Item;
-use commandapp\model\Paiement as Paiement;
-use commandapp\model\Item_commande as Item_commande;
+// use commandapp\model\Paiement as Paiement;
+// use commandapp\model\Item_commande as Item_commande;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 
@@ -213,7 +213,7 @@ $commande_new_3->save();
 $commande_new_3->carte()->associate($carte11);
 $commande_new_3->save();
 
-// $commande_a_associer_3->save();
+$commande_a_associer_3->save();
 
 echo "3ème commandes créée associée à la carte 11." . PHP_EOL;
 
